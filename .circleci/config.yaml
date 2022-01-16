@@ -1,8 +1,13 @@
 version: "2"
-
-services:
-
-  holadocker:
-    build: .
-    ports:
-      - 80:80
+jobs:
+  build-and-push:
+    machine: true
+    steps:
+      - add_ssh_key:
+        fingerprint:
+          - ""
+      - checkout
+      - run: docker login -u $DOCKER_USER -P $DOCKER_PASS
+      - run: docker build -t GerardoTovar/hola-docker:$CIRCLE_SHA1
+      - run: docker push GerardoTovar/hola-docker:$CIRCLE_SHA1
+      - run: ssh -o StrictHostKeyChecking=no root 
